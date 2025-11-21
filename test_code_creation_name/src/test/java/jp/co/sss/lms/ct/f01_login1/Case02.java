@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f01_login1;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import jp.co.sss.lms.ct.util.WebDriverUtils;
 
@@ -41,6 +43,13 @@ public class Case02 {
 		// ログイン画面に遷移する
 		goTo("http://localhost:8080/lms");
 
+		// 画面遷移が正しく行われたか確認する
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("ログイン", title.getText());
+
+		WebElement btn = WebDriverUtils.webDriver.findElement(By.className("btn-primary"));
+		assertEquals("ログイン", btn.getAttribute("value"));
+
 		// エビデンスを取得する
 		getEvidence(new Object(){});
 	}
@@ -52,15 +61,19 @@ public class Case02 {
 		// ログインIDとパスワードを入力する
 		WebDriverUtils.webDriver.findElement(By.id("loginId")).sendKeys("abc");
 		WebDriverUtils.webDriver.findElement(By.id("password")).sendKeys("abc");
-		
+
 		// エビデンスを取得する①
-		getEvidence(new Object(){},"01");
-		
+		getEvidence(new Object(){}, "01");
+
 		// ログインボタンを押下する
 		WebDriverUtils.webDriver.findElement(By.className("btn-primary")).click();
+
+		// エラーメッセージが表示されることを確認する
+		WebElement error = WebDriverUtils.webDriver.findElement(By.className("error"));
+		assertEquals("* ログインに失敗しました。", error.getText());
 		
 		// エビデンスを取得する②
-		getEvidence(new Object(){},"02");
+		getEvidence(new Object(){}, "02");
 	}
 
 }
