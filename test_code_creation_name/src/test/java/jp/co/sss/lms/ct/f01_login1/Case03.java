@@ -66,8 +66,8 @@ public class Case03 {
 		WebDriverUtils.webDriver.findElement(By.className("btn-primary")).click();
 
 		//ログインに成功し、画面遷移が正しく行われたか確認する
-		WebElement title = WebDriverUtils.webDriver.findElement(By.className("active"));
 		WebDriverUtils.visibilityTimeout(By.className("active"), 10);
+		WebElement title = WebDriverUtils.webDriver.findElement(By.className("active"));
 		assertEquals("コース詳細", title.getText());
 		
 		// エビデンスを取得する②
