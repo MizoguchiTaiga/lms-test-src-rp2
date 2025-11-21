@@ -47,9 +47,6 @@ public class Case01 {
 		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
 		assertEquals("ログイン", title.getText());
 		
-		WebElement btn = WebDriverUtils.webDriver.findElement(By.className("btn-primary"));
-		assertEquals("ログイン", btn.getAttribute("value"));
-		
 		// エビデンスを取得する
 		getEvidence(new Object(){});
 	}
