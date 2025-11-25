@@ -137,6 +137,7 @@ public class Case05 {
 		WebDriverUtils.webDriver.findElement(By.xpath("//input[@value='検索']")).click();
 		
 		// 期待値通りの検索結果1件だけが表示されていることを確認する
+		WebDriverUtils.visibilityTimeout(By.className("sorting_1"), 10);
 		List<WebElement> questions = WebDriverUtils.webDriver.findElements(By.className("sorting_1"));
 		assertEquals(1,questions.size());
 		assertEquals("Q.助成金書類の作成方法が分かりません", questions.get(0).getText());
