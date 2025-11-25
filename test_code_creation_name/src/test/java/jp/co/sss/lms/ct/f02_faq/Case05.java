@@ -3,6 +3,8 @@ package jp.co.sss.lms.ct.f02_faq;
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -134,9 +136,10 @@ public class Case05 {
 		// 「検索」ボタンを押下する
 		WebDriverUtils.webDriver.findElement(By.xpath("//input[@value='検索']")).click();
 		
-		// 期待値通りの検索結果が表示されていることを確認する
-		WebElement result = WebDriverUtils.webDriver.findElement(By.className("sorting_1"));
-		assertEquals("Q.助成金書類の作成方法が分かりません", result.getText());
+		// 期待値通りの検索結果1件だけが表示されていることを確認する
+		List<WebElement> questions = WebDriverUtils.webDriver.findElements(By.className("sorting_1"));
+		assertEquals(1,questions.size());
+		assertEquals("Q.助成金書類の作成方法が分かりません", questions.get(0).getText());
 		
 		// エビデンスを取得する②
 		scrollTo("860");
