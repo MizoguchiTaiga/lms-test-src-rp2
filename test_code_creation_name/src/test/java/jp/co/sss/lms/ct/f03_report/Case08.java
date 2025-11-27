@@ -104,8 +104,12 @@ public class Case08 {
 		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
 		assertEquals("週報【デモ】\s2022年10月2日", title.getText());
 		
-		// エビデンスを取得する
-		getEvidence(new Object(){});
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+		
+		// エビデンスを取得する②(※修正前の入力内容の確認用)
+		scrollTo("400");
+		getEvidence(new Object(){}, "02");
 	}
 
 	@Test
