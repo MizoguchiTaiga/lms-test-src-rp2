@@ -138,28 +138,40 @@ public class Case14 {
 	void test06() {
 		// 各問題の選択肢を選択する
 		WebDriverUtils.webDriver.findElement(By.id("answer-0-2")).click();
+		getEvidence(new Object(){}, "01");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-1-2")).click();
+		getEvidence(new Object(){}, "02");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-2-0")).click();
+		getEvidence(new Object(){}, "03");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-3-0")).click();
+		getEvidence(new Object(){}, "04");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-4-1")).click();
+		getEvidence(new Object(){}, "05");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-5-1")).click();
+		getEvidence(new Object(){}, "06");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-6-2")).click();
+		getEvidence(new Object(){}, "07");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-7-3")).click();
+		getEvidence(new Object(){}, "08");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-8-2")).click();
+		getEvidence(new Object(){}, "09");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-9-0")).click();
+		getEvidence(new Object(){}, "10");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-10-2")).click();
+		getEvidence(new Object(){}, "11");
 		scrollBy("360");
 		WebDriverUtils.webDriver.findElement(By.id("answer-11-3")).click();
+		getEvidence(new Object(){}, "12");
 		
 		// 「確認画面へ進む」ボタンを押下する
 		scrollTo("5000");
@@ -171,7 +183,7 @@ public class Case14 {
 		assertEquals("回答を送信する", btn.getText());
 				
 		// エビデンスを取得する
-		getEvidence(new Object(){});	
+		getEvidence(new Object(){}, "13");
 	}
 
 	@Test
