@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f06_login2;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import jp.co.sss.lms.ct.util.WebDriverUtils;
 
 /**
  * 結合テスト ログイン機能②
@@ -34,29 +39,97 @@ public class Case17 {
 	@Test
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
-	void test01() {
-		// TODO ここに追加
+	void test01() throws InterruptedException {
+		// ログイン画面に遷移する
+		goTo("http://localhost:8080/lms");
+
+		// 画面遷移が正しく行われたか確認する
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("ログイン", title.getText());
+
+		// エビデンスを取得する
+		getEvidence(new Object(){});
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("テスト02 DBに初期登録された未ログインの受講生ユーザーでログイン")
 	void test02() {
-		// TODO ここに追加
+		// ログインIDとパスワードを入力する
+		WebDriverUtils.webDriver.findElement(By.id("loginId")).sendKeys("StudentAA04");
+		WebDriverUtils.webDriver.findElement(By.id("password")).sendKeys("StudentAA04");
+
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+
+		// ログインボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.className("btn-primary")).click();
+
+		// ログインに成功し、画面遷移が正しく行われたか確認する
+		WebDriverUtils.visibilityTimeout(By.tagName("h2"), 10);
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("利用規約", title.getText());
+
+		// エビデンスを取得する②
+		getEvidence(new Object(){}, "02");
 	}
 
 	@Test
 	@Order(3)
 	@DisplayName("テスト03 「同意します」チェックボックスにチェックを入れ「次へ」ボタン押下")
 	void test03() {
-		// TODO ここに追加
+		// 「同意します」にチェックを入れる
+		WebDriverUtils.webDriver.findElement(By.name("securityFlg")).click();
+		
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+		
+		// 「次へ」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.className("btn-primary")).click();
+		
+		// 画面遷移が正しく行われたか確認する
+		WebDriverUtils.visibilityTimeout(By.tagName("h2"), 10);
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("パスワード変更", title.getText());
+		
+		// エビデンスを取得する②
+		getEvidence(new Object(){}, "02");
 	}
 
 	@Test
 	@Order(4)
 	@DisplayName("テスト04 変更パスワードを入力し「変更」ボタン押下")
 	void test04() {
-		// TODO ここに追加
+		// テスト用のパスワードを入力する
+		WebElement currentPassword = WebDriverUtils.webDriver.findElement(By.id("currentPassword"));
+		currentPassword.sendKeys("StudentAA04");
+		
+		WebElement newPassword = WebDriverUtils.webDriver.findElement(By.id("password"));
+		newPassword.sendKeys("StudentAA044");
+		
+		WebElement passwordConfirm = WebDriverUtils.webDriver.findElement(By.id("passwordConfirm"));
+		passwordConfirm.sendKeys("StudentAA044");
+		
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+		
+		// 「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		// エビデンスを取得する②
+		visibilityTimeout(By.id("upd-btn"),5);
+		getEvidence(new Object(){}, "02");
+		
+		// 確認モーダルの「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.id("upd-btn")).click();
+		
+		// 画面遷移が正しく行われたか確認する
+		WebDriverUtils.visibilityTimeout(By.className("active"), 10);
+		WebElement title = WebDriverUtils.webDriver.findElement(By.className("active"));
+		assertEquals("コース詳細", title.getText());
+		
+		// エビデンスを取得する③
+		getEvidence(new Object(){}, "03");
 	}
 
 }
