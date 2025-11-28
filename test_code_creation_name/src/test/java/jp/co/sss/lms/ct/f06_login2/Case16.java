@@ -1,6 +1,9 @@
 package jp.co.sss.lms.ct.f06_login2;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.Assert.*;
+
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +12,10 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import jp.co.sss.lms.ct.util.WebDriverUtils;
 
 /**
  * 結合テスト ログイン機能②
@@ -35,49 +42,209 @@ public class Case16 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// TODO ここに追加
+		// ログイン画面に遷移する
+		goTo("http://localhost:8080/lms");
+
+		// 画面遷移が正しく行われたか確認する
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("ログイン", title.getText());
+
+		// エビデンスを取得する
+		getEvidence(new Object(){});
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("テスト02 DBに初期登録された未ログインの受講生ユーザーでログイン")
 	void test02() {
-		// TODO ここに追加
+		WebDriverUtils.webDriver.findElement(By.id("loginId")).sendKeys("StudentAA03");
+		WebDriverUtils.webDriver.findElement(By.id("password")).sendKeys("StudentAA03");
+
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+
+		// ログインボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.className("btn-primary")).click();
+
+		//ログインに成功し、画面遷移が正しく行われたか確認する
+		WebDriverUtils.visibilityTimeout(By.tagName("h2"), 10);
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("利用規約", title.getText());
+
+		// エビデンスを取得する②
+		getEvidence(new Object(){}, "02");
 	}
 
 	@Test
 	@Order(3)
 	@DisplayName("テスト03 「同意します」チェックボックスにチェックを入れ「次へ」ボタン押下")
 	void test03() {
-		// TODO ここに追加
+		// 「同意します」にチェックを入れる
+		WebDriverUtils.webDriver.findElement(By.name("securityFlg")).click();
+		
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+		
+		// 「次へ」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.className("btn-primary")).click();
+		
+		// 画面遷移が正しく行われたか確認する
+		WebDriverUtils.visibilityTimeout(By.tagName("h2"), 10);
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("パスワード変更", title.getText());
+		
+		// エビデンスを取得する②
+		getEvidence(new Object(){}, "02");
 	}
 
 	@Test
 	@Order(4)
 	@DisplayName("テスト04 パスワードを未入力で「変更」ボタン押下")
 	void test04() {
-		// TODO ここに追加
+		// すべての入力値が未入力であることを確認する
+		WebElement currentPassword = WebDriverUtils.webDriver.findElement(By.id("currentPassword"));
+		assertEquals("", currentPassword.getAttribute("value"));
+		
+		WebElement newPassword = WebDriverUtils.webDriver.findElement(By.id("password"));
+		assertEquals("", newPassword.getAttribute("value"));
+		
+		WebElement passwordConfirm = WebDriverUtils.webDriver.findElement(By.id("passwordConfirm"));
+		assertEquals("", passwordConfirm.getAttribute("value"));
+		
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+		
+		// 「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		// エビデンスを取得する②
+		visibilityTimeout(By.id("upd-btn"),5);
+		getEvidence(new Object(){}, "02");
+		
+		// 確認モーダルの「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.id("upd-btn")).click();
+
+		// エラーメッセージが表示されていることを確認する
+		visibilityTimeout(By.className("error"),5);
+		List<WebElement> errors = WebDriverUtils.webDriver.findElements(By.className("error"));
+		assertEquals("現在のパスワードは必須です。", errors.get(1).getText());
+		assertEquals("「パスワード」には半角英数字のみ使用可能です。"
+				+ "また、半角英大文字、半角英小文字、数字を含めた8～20文字を入力してください。\n"
+				+ "パスワードは必須です。", errors.get(2).getText());
+		assertEquals("確認パスワードは必須です。", errors.get(3).getText());
+		
+		// エビデンスを取得する③
+		getEvidence(new Object(){}, "03");
 	}
 
 	@Test
 	@Order(5)
 	@DisplayName("テスト05 20文字以上の変更パスワードを入力し「変更」ボタン押下")
 	void test05() {
-		// TODO ここに追加
+		// テスト用のパスワードを入力する
+		WebElement currentPassword = WebDriverUtils.webDriver.findElement(By.id("currentPassword"));
+		currentPassword.sendKeys("StudentAA03");
+		
+		WebElement newPassword = WebDriverUtils.webDriver.findElement(By.id("password"));
+		newPassword.sendKeys("AAAAAAAAAAaaaaaaaaaa1111111111111111111");
+		
+		WebElement passwordConfirm = WebDriverUtils.webDriver.findElement(By.id("passwordConfirm"));
+		passwordConfirm.sendKeys("AAAAAAAAAAaaaaaaaaaa1111111111111111111");
+		
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+		
+		// 「変更」ボタンを押下する
+		scrollBy("400");
+		WebDriverUtils.webDriver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		// エビデンスを取得する②
+		visibilityTimeout(By.id("upd-btn"),5);
+		getEvidence(new Object(){}, "02");
+		
+		// 確認モーダルの「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.id("upd-btn")).click();
+
+		// エラーメッセージが表示されていることを確認する
+		visibilityTimeout(By.className("error"),5);
+		List<WebElement> errors = WebDriverUtils.webDriver.findElements(By.className("error"));
+		assertEquals("パスワードの長さが最大値(20)を超えています。", errors.get(1).getText());
+		
+		// エビデンスを取得する③
+		getEvidence(new Object(){}, "03");
 	}
 
 	@Test
 	@Order(6)
 	@DisplayName("テスト06 ポリシーに合わない変更パスワードを入力し「変更」ボタン押下")
 	void test06() {
-		// TODO ここに追加 
+		// テスト用のパスワードを入力する
+		WebElement currentPassword = WebDriverUtils.webDriver.findElement(By.id("currentPassword"));
+		currentPassword.sendKeys("StudentAA03");
+		
+		WebElement newPassword = WebDriverUtils.webDriver.findElement(By.id("password"));
+		newPassword.sendKeys("aaaaaaaaaa");
+		
+		WebElement passwordConfirm = WebDriverUtils.webDriver.findElement(By.id("passwordConfirm"));
+		passwordConfirm.sendKeys("aaaaaaaaaa");
+		
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+		
+		// 「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		// エビデンスを取得する②
+		visibilityTimeout(By.id("upd-btn"),5);
+		getEvidence(new Object(){}, "02");
+		
+		// 確認モーダルの「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.id("upd-btn")).click();
+		
+		// エラーメッセージが表示されていることを確認する
+		visibilityTimeout(By.className("error"),5);
+		List<WebElement> errors = WebDriverUtils.webDriver.findElements(By.className("error"));
+		assertEquals("「パスワード」には半角英数字のみ使用可能です。"
+				+ "また、半角英大文字、半角英小文字、数字を含めた8～20文字を入力してください。", errors.get(1).getText());
+		
+		// エビデンスを取得する③
+		getEvidence(new Object(){}, "03");
 	}
 
 	@Test
 	@Order(7)
 	@DisplayName("テスト07 一致しない確認パスワードを入力し「変更」ボタン押下")
 	void test07() {
-		// TODO ここに追加
+		// テスト用のパスワードを入力する
+		WebElement currentPassword = WebDriverUtils.webDriver.findElement(By.id("currentPassword"));
+		currentPassword.sendKeys("StudentAA03");
+		
+		WebElement newPassword = WebDriverUtils.webDriver.findElement(By.id("password"));
+		newPassword.sendKeys("StudentAA033");
+		
+		WebElement passwordConfirm = WebDriverUtils.webDriver.findElement(By.id("passwordConfirm"));
+		passwordConfirm.sendKeys("StudentAA034");
+		
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+		
+		// 「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		// エビデンスを取得する②
+		visibilityTimeout(By.id("upd-btn"),5);
+		getEvidence(new Object(){}, "02");
+		
+		// 確認モーダルの「変更」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.id("upd-btn")).click();
+
+		// エラーメッセージが表示されていることを確認する
+		visibilityTimeout(By.className("error"),5);
+		List<WebElement> errors = WebDriverUtils.webDriver.findElements(By.className("error"));
+		assertEquals("パスワードと確認パスワードが一致しません。", errors.get(1).getText());
+		
+		// エビデンスを取得する③
+		getEvidence(new Object(){}, "03");
 	}
 
 }
