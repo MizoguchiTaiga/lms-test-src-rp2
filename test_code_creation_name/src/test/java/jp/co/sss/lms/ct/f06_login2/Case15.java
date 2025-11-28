@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f06_login2;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import jp.co.sss.lms.ct.util.WebDriverUtils;
 
 /**
  * 結合テスト ログイン機能②
@@ -35,21 +40,52 @@ public class Case15 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// TODO ここに追加
+		// ログイン画面に遷移する
+		goTo("http://localhost:8080/lms");
+
+		// 画面遷移が正しく行われたか確認する
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("ログイン", title.getText());
+
+		// エビデンスを取得する
+		getEvidence(new Object(){});
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("テスト02 DBに初期登録された未ログインの受講生ユーザーでログイン")
 	void test02() {
-		// TODO ここに追加
+		WebDriverUtils.webDriver.findElement(By.id("loginId")).sendKeys("StudentAA02");
+		WebDriverUtils.webDriver.findElement(By.id("password")).sendKeys("StudentAA02");
+
+		// エビデンスを取得する①
+		getEvidence(new Object(){}, "01");
+
+		// ログインボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.className("btn-primary")).click();
+
+		//ログインに成功し、画面遷移が正しく行われたか確認する
+		WebDriverUtils.visibilityTimeout(By.tagName("h2"), 10);
+		WebElement title = WebDriverUtils.webDriver.findElement(By.tagName("h2"));
+		assertEquals("利用規約", title.getText());
+
+		// エビデンスを取得する②
+		getEvidence(new Object(){}, "02");
 	}
 
 	@Test
 	@Order(3)
 	@DisplayName("テスト03 「同意します」チェックボックスにチェックをせず「次へ」ボタンを押下")
 	void test03() {
-		// TODO ここに追加
+		// 「次へ」ボタンを押下する
+		WebDriverUtils.webDriver.findElement(By.className("btn-primary")).click();
+		
+		// エラーメッセージが表示されることを確認する
+		WebElement error = WebDriverUtils.webDriver.findElement(By.className("error"));
+		assertEquals("セキュリティ規約への同意は必須です。", error.getText());
+		
+		// エビデンスを取得する
+		getEvidence(new Object(){});
 	}
 
 }
